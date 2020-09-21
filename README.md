@@ -13,11 +13,13 @@ What is neccessary however, is Docker. Be sure that Docker installed and running
 
     $ docker version
 
-If you haven't installed it, head on over to: https://www.docker.com/get-started. Once installed, make sure you run the docker deamon (insalled as a application on your system, see guide). Once running, you should be able to get the app (emulating an API for real-time prediction), using:
+If you haven't installed it, head on over to: https://www.docker.com/get-started. Once installed, make sure you run the docker deamon (insalled as a application on your system, see guide). Once running, you should be able to get the app running(emulating an API for real-time prediction), using:
 
     $ docker-compose up
 
-This might take a little bit (as we need to build the image). Once built and up and running, you should start seeing "web_1   |" logging output in your console. That means the app is running! 
+This might take a little bit (as we need to build the image). 
+
+Once built and up and running, you should start seeing "web_1   |" logging output in your console. Before this, you should also see the output of the tests. Assuming no failed tests and the inbound logging, this means our app is running successfully! 
 
 Open up a browser and put in the link directing you to the developement server (should be http://0.0.0.0:8000/). 
 
