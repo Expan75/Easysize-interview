@@ -3,15 +3,11 @@ from django.http import JsonResponse
 from .serializers import PredictionSerializer
 from .models import Prediction
 
-# realtime prediction with asyncronhous save using worker
-def generatePrediction(request):
-    return
-
 
 # Predictions CRUD
 class PredictionViewSet(viewsets.ModelViewSet):
     """
-    API endpoint for serving historical predictions. Does require login auth.
+    API endpoint for serving historical predictions. Does require login auth & permissions.
     """
 
     queryset = Prediction.objects.all().order_by("-created")
