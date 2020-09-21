@@ -58,8 +58,6 @@ class Prediction(models.Model):
 
         # Insert pipeline here
 
-        # Insert model prediction here
-
         # Save model prediction to output attribute
         self.output = 999.0
 
@@ -79,6 +77,6 @@ class Prediction(models.Model):
             logger.debug(f"Output was generated succesfully")
         except AssertionError:
             self.output = 0
-            logger.debug(f"Output was defaulted to 0")
+            logger.debug(f"Output was not generated successfully, defaulting to 0")
 
         super().save(*args, **kwargs)  # Call the "real" save() method.
