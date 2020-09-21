@@ -139,3 +139,25 @@ MODEL_BINARIES_DIR = os.path.join(BASE_DIR, "model-binaries")
 
 # Pipelines Directories
 TRANSFORMER_BINARIES_DIR = os.path.join(BASE_DIR, "transformer-binaries")
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+    },
+}

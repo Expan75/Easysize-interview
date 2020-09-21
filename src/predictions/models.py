@@ -1,6 +1,10 @@
+import logging
 import pickle
 import string
 from django.db import models
+
+# Get already set up logger
+logger = logging.getLogger(__name__)
 
 # setup vars for use in categorical input (django is a bit picky with representation)
 categories = tuple(list(string.ascii_lowercase))
@@ -32,9 +36,13 @@ class Prediction(models.Model):
         If successful: returns and sets the predicted real number based on the inputs.
         else: returns AssertionError
         """
+        # logging
+        logger.debug(
+            f"generate_output() was called /w inputs: {self.numerical_input1}, {self.numerical_input2}, {self.categorical_input}"
+        )
 
         # collect the raw numerical inputs and throw assertion error if input is wrong (empty or shape mismatch)
-        raw_nonnull_inputs = [
+        raw_filled_inputs = [
             given_input
             for given_input in [
                 self.numerical_input1,
@@ -43,9 +51,9 @@ class Prediction(models.Model):
             ]
             if given_input != None
         ]
-        if len(raw_nonnull_inputs) != 3:
+        if len(raw_filled_inputs) != 3:
             raise AssertionError(
-                f"Incorrect number of non-null inputs were fed to prediction pipeline. was {len(raw_nonnull_inputs)}, should be 3."
+                f"Incorrect number of non-null inputs were fed to prediction pipeline. was {len(raw_filled_inputs)}, should be 3."
             )
 
         # Insert pipeline here
@@ -63,9 +71,14 @@ class Prediction(models.Model):
         Overrites native save method to generate prediction output before model save;
         defaults to generating zero as prediction if pipeline is broken or incorrectly fed.
         """
+
+        logger.debug(f"save() was called on prediction instance.")
+
         try:
             self.generate_output()
+            logger.debug(f"Output was generated succesfully")
         except AssertionError:
             self.output = 0
+            logger.debug(f"Output was defaulted to 0")
 
         super().save(*args, **kwargs)  # Call the "real" save() method.
