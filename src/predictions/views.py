@@ -1,13 +1,17 @@
 from rest_framework import viewsets, permissions
-from .models import Prediction
-from .serializers import PredictionSerializer
 from django.http import JsonResponse
+from .serializers import PredictionSerializer
+from .models import Prediction
+
+# realtime prediction with asyncronhous save using worker
+def generatePrediction(request):
+    return
 
 
-# User CRUD
-class UserViewSet(viewsets.ModelViewSet):
+# Predictions CRUD
+class PredictionViewSet(viewsets.ModelViewSet):
     """
-    API endpoint for serving predictions. Does require login auth.
+    API endpoint for serving historical predictions. Does require login auth.
     """
 
     queryset = Prediction.objects.all().order_by("-created")

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "predictions",
 ]
 
 MIDDLEWARE = [
@@ -129,3 +131,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+
+# Model Directories (points to local fs but can be e.g S3 bucket)
+
+MODEL_BINARIES_DIR = os.path.join(BASE_DIR, "model-binaries")
+
+# Pipelines Directories
+TRANSFORMER_BINARIES_DIR = os.path.join(BASE_DIR, "transformer-binaries")
