@@ -1,7 +1,12 @@
+import os
 import logging
-import pickle
+import joblib
 import string
+import numpy as np
+import pandas as pd
+import warnings
 from django.db import models
+
 
 # Get already set up logger
 logger = logging.getLogger(__name__)
@@ -56,12 +61,25 @@ class Prediction(models.Model):
                 f"Incorrect number of non-null inputs were fed to prediction pipeline. was {len(raw_filled_inputs)}, should be 3."
             )
 
-        # Insert pipeline here
+        # load model (local fs for now, TODO: should DEF be cached!!!)
+        model_path = "../src/binaries/model.joblib"
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore")
+            with open(model_path, "rb") as f:
+                model = joblib.load(f)
 
-        # Save model prediction to output attribute
-        self.output = 999.0
+        # pipe input data through onehot encoder (do not change numerical raw input)
+        onehot_encoded = [
+            1 if ch == raw_filled_inputs[2] else 0
+            for ch in list(string.ascii_lowercase)
+        ]
+        features = np.array(raw_filled_inputs[:2] + onehot_encoded).reshape(1, -1)
 
-        return
+        # get prediction
+        prediction = model.predict(features)
+
+        # Save flattened model prediction to output attribute
+        self.output = prediction[0]
 
     # Now override native save method to run generate output automatically
     def save(self, *args, **kwargs):

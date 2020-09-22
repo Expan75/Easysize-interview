@@ -137,11 +137,7 @@ STATICFILES_DIRS = [
 
 
 # Model Directories (points to local fs but can be e.g S3 bucket)
-
-MODEL_BINARIES_DIR = os.path.join(BASE_DIR, "model-binaries")
-
-# Pipelines Directories
-TRANSFORMER_BINARIES_DIR = os.path.join(BASE_DIR, "transformer-binaries")
+BINARIES_DIR = os.path.join(BASE_DIR, "binaries")
 
 # Logging
 LOGGING = {
