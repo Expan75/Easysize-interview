@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import warnings
 from django.db import models
+from api.settings import MODEL_DIR
 
 
 # Get already set up logger
@@ -14,6 +15,13 @@ logger = logging.getLogger(__name__)
 # setup vars for use in categorical input (django is a bit picky with representation)
 categories = tuple(list(string.ascii_lowercase))
 choices = zip(categories, categories)
+
+# load model (local fs for now, TODO: should DEF be cached!!!)
+model_path = os.path.join(MODEL_DIR, "model.joblib")
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore")
+    with open(model_path, "rb") as f:
+        model = joblib.load(f)
 
 
 class Prediction(models.Model):
@@ -61,24 +69,18 @@ class Prediction(models.Model):
                 f"Incorrect number of non-null inputs were fed to prediction pipeline. was {len(raw_filled_inputs)}, should be 3."
             )
 
-        # load model (local fs for now, TODO: should DEF be cached!!!)
-        model_path = "../src/binaries/model.joblib"
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore")
-            with open(model_path, "rb") as f:
-                model = joblib.load(f)
-
         # pipe input data through onehot encoder (do not change numerical raw input)
         onehot_encoded = [
-            1 if ch == raw_filled_inputs[2] else 0
+            1.0 if ch == raw_filled_inputs[2] else 0.0
             for ch in list(string.ascii_lowercase)
         ]
-        features = np.array(raw_filled_inputs[:2] + onehot_encoded).reshape(1, -1)
+        # fuse with untouched inputs
+        features = np.array(
+            raw_filled_inputs[:2] + onehot_encoded, dtype=np.float64
+        ).reshape(1, -1)
 
-        # get prediction
+        # get and save prediction as float
         prediction = model.predict(features)
-
-        # Save flattened model prediction to output attribute
         self.output = prediction[0]
 
     # Now override native save method to run generate output automatically
