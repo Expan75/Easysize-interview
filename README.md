@@ -42,6 +42,21 @@ Please do try to be cheeky and put in something "unexpected" in the output. :)
 
 On successful request (status_201), you will get back the generated output with the rest of the model that is the object representing the prediction.
 
+## Notebooks
+
+If you would like to go through the notebooks that were used to generate the data and train the model, please create a new python virtual environment and install the dependencies:
+
+    $ python3 -m venv env
+    $ source env/bin/activate
+    $ pip install -r requirements.txt
+
+Then the only thing left is to run jupyter notebook:
+
+    $ jupyter notebook
+
+This should open a new tab on your browser. Please navigate to the notebook you want to inspect. Hopefully the filenames speak for themselves. :)
+
+
 ## Disclaimers
 
 Note that this is only a demo product and as such it is lacking a couple of things. Some things that immidetely spring to mind are:
@@ -51,6 +66,8 @@ Note that this is only a demo product and as such it is lacking a couple of thin
 2. While saving a prediction is valuable as it is vital to evaluate model performance historically or catch data/model degredation, forcing a request to make a roundtrip from the DB is unnessecary (and would likely lead to latency issues in a real-system). A better solution would be to seperate the serving of the prediction and the save of the data model representing the prediction. A way of doing this would be to use a worker to handle the saving of the model (e.g. Celery or something similar).
 
 3. Tests need to be expanded to cover the breath of the app. Right now they are only dealing the very core of the prediction (at a model level). True tests would be much more all-encompassing.
+
+4. A pipeline should be exported in one piece, not with disjointed and seperate feature engineering and model. Scikit-learn is amazing but serialising and exporting a complex pipeline is hard to do well. That said, the effort to get it right is needed, as it drastically reduces complexity by hiding feature engineering code on the server side.
 
 There's plenty more to be said about extension and productionizing a system like this. I'd gladly answer any questions and discuss the solution with you. I'd also love to hear about roughly what is already in place and what your planned next steps are! :)
 
